@@ -1,0 +1,269 @@
+<!-- Christmas Noise Tree -->
+<!-- Jonathan Chan -->
+<!-- Used code:
+Noise Tree, Daniel Howe
+Purple Rain, Daniel Shiffman -->
+<!-- 17-12-2018 -->
+
+
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+  <script>
+    var k = 0,
+      rs = 0,
+      mult = .65,
+      angle = 70,
+      timer,
+      drops = [],
+      branchLen = 140;
+
+    function setup() {
+      createCanvas(900, 700);
+      for (var i = 0; i < 200; i++) {
+        drops[i] = new Drop();
+      }
+      //strokeCap(ROUND);
+    }
+
+    function draw() {
+      timer = millis();
+      randomSeed(rs);
+      background('#191950');
+      push();
+      translate(width / 2, height);
+      branch(branchLen, 0, 0);
+      k += 0.01;
+      pop();
+      for (var i = 0; i < drops.length; i++) {
+        drops[i].fall();
+        drops[i].show();
+      }
+      var jj = 6000;
+      for (var j = 0; j < width; j++) {
+        stroke(255);
+        line(j, map(noise(jj += 0.005), 0, 1, height-50, height), j, height);
+      }
+    }
+
+    function branch(len, snow, star) {
+
+      if (len > 4) {
+
+        stroke(0, 200);
+        var sw = map(len, 200, 4, 20, .1);
+        strokeWeight(sw);
+        line(0, 0, 0, -len);
+        //oline(0, 0, 0, -len, sw);
+        // if (len < 45) {
+        //   push();
+        //   stroke(0, 0);
+        //   fill(0, 100, 0, 60);
+        //   ellipse(0, 0, len, len*2);
+        //   pop();
+        // }
+        if (len < branchLen && len > 4) {
+          var i = 0;
+          while (i < 5) {
+            var ran = random(-1, 1);
+            if (ran > 0) {
+              rotate(radians(-angle));
+              // translate()
+            } else if (ran <= 0) {
+              rotate(radians(angle));
+            }
+            stroke(0, 0);
+            fill(0, 120, 0, 60);
+            ellipse(0, 0, len / 4, len);
+            if (ran > 0) {
+              rotate(radians(angle));
+            } else if (ran <= 0) {
+              rotate(radians(-angle));
+            }
+            translate(0, map(abs(ran), 0, 1, 0, -len / 5));
+            light(timer);
+            i += abs(ran);
+          }
+        } else {
+          translate(0, -len);
+        }
+
+
+
+
+        len *= 0.78;
+        var slen = len * 0.57;
+
+        push();
+        rotate(radians(-angle + map(noise(k), 0, 1, -5, 5)));
+        var stars = 2;
+        if (snow == 0) {
+          var snowA = 1;
+        } else if (snow == 2) {
+          var snowA = 3;
+        } else if (snow == 3) {
+          var snowA = 3;
+        } else {
+          var snowA = 4;
+        }
+        branch(slen, snowA, stars);
+        pop();
+
+        push();
+        rotate(radians(angle + map(noise(1000 + k), 0, 1, -5, 5)));
+        var stars = 2;
+        if (snow == 0) {
+          var snowB = 2;
+        } else if (snow == 1) {
+          var snowB = 3;
+        } else if (snow == 3) {
+          var snowB = 3;
+        } else {
+          var snowB = 4;
+        }
+        branch(slen, snowB, stars);
+        pop();
+
+        push();
+        rotate(radians(map(noise(2000 + k), 0, 1, -2, 2)));
+        if (star == 0) {
+          var stars = 1;
+        } else if (star == 1) {
+          var stars = 1;
+        } else {
+          var stars = 2;
+        }
+        if (snow == 3) {
+          var snows = 3;
+        } else if (snow == 0) {
+          var snows = 0;
+        } else if (snow == 2) {
+          var snows = 2;
+        } else if (snow == 1) {
+          var snows = 1;
+        } else {
+          var snows = 4;
+        }
+        branch(len, snows, stars);
+        pop();
+
+        // if (random(1) < .5) {
+        //   push();
+        //   rotate(radians(angle / 2 + map(noise(1000 + k), 0, 1, -10, 10)));
+        //   branch(len);
+        //   pop();
+        // }
+      } else {
+        noStroke();
+        fill(0, 120, 0, 60);
+        ellipse(0, 0, random(4, 7), random(10, 20));
+
+        if (snow == 3) {
+          fill(255);
+          ellipse(0, 0, 12);
+        }
+        if (star == 1) {
+          Astar();
+        }
+        light(timer);
+        //text(random(1)>.5 ? '1':'0',0,0);//,random(2,5),random(10,20));
+        //text('1',0,0);
+      }
+    }
+
+    function light(timer) {
+      var LED = random(300);
+      var color = ['#FFC0CB', '#FF3333', '#FFD700', '#663399'];
+      if (LED <= 1) {
+        fill(random(color));
+        if (LED >= 0.5) {
+          if (timer % 10000 >= 5000) {
+            fill(0, 0);
+          }
+        }
+        if (LED < 0.5) {
+          if (timer % 10000 < 5000) {
+            fill(0, 0);
+          }
+        }
+        ellipse(0, 0, 25);
+      }
+    }
+
+    function Astar() {
+      stroke('#DAA520');
+      strokeWeight(2);
+      fill('YELLOW');
+      for (var s = 0; s < 5; s++) {
+        triangle(0, 0, 10 / tan(radians(54)), -10, 0, -40);
+        triangle(0, 0, -10 / tan(radians(54)), -10, 0, -40)
+        rotate(radians(72));
+      }
+    }
+
+    function mouseClicked() {
+      rs = random(1000);
+    }
+
+    function Drop() {
+      this.x = random(width);
+      this.y = random(-500, -50);
+      this.z = random(0, 20);
+      // this.len = map(this.z, 0, 20, 10, 20);
+      this.yspeed = map(this.z, 0, 20, 1, 10);
+
+      this.fall = function() {
+        this.y = this.y + this.yspeed;
+        var grav = map(this.z, 0, 20, 0, 0.1);
+        this.yspeed = this.yspeed + grav;
+
+        if (this.y > height) {
+          this.y = random(-200, -100);
+          this.yspeed = map(this.z, 0, 20, 4, 10);
+        }
+      }
+
+      this.show = function() {
+        var snowSize = map(this.z, 0, 20, 1, 7);
+        // strokeWeight(thick);
+        stroke(0, 0);
+        ellipse(this.x, this.y, snowSize);
+      }
+    }
+
+
+    // function oline(x1, y1, x2, y2, weight) {
+    //   strokeCap(ROUND);
+    //   strokeWeight(weight);
+    //
+    //   var twisti = 1 + (weight / 24.0);
+    //
+    //   var xd = x2 - x1,
+    //     yd = y2 - y1;
+    //   var dist = sqrt(xd * xd + yd * yd);
+    //   var sections = ceil(dist / 10.0);
+    //   //sections = 8;
+    //
+    //   var twist, twist2 = new Array(sections + 1);
+    //   for (var i = 0; i < twist2.length; i++) {
+    //     twist2[i] = 0.0;
+    //   }
+    //
+    //   for (var i = 0; i < sections; i++) {
+    //     twist = random(-twisti, twisti);
+    //     var tx1 = x1 + ((xd / sections) * (i)) + twist2[i];
+    //     var tx2 = x1 + ((xd / sections) * (i + 1)) + twist;
+    //     var ty1 = y1 + ((yd / sections) * (i));
+    //     var ty2 = y1 + ((yd / sections) * (i + 1));
+    //     if (i == sections - 1) {
+    //       tx2 = x2;
+    //       ty2 = y2;
+    //     }
+    //     line(tx1, ty1, tx2, ty2);
+    //     twist2[i + 1] = twist;
+    //   }
+    //}
+  </script>
+</head>
+
+</html>
