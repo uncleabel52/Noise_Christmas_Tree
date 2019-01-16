@@ -4,7 +4,7 @@ Drop[] drops = new Drop[200] ;
 
 
 void setup() {
-size(900, 700, P2D);
+size(900, 700, P3D);
 for (int i = 0; i < 200; i++) {
   drops[i] = new Drop();
 }
