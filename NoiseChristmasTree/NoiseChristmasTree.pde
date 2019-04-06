@@ -217,3 +217,4 @@ void show() {
   fill(255);
   ellipse(x, y, snowSize, snowSize);
 }
+}
